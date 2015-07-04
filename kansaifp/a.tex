@@ -1,0 +1,254 @@
+\documentclass[pdflatex,12pt]{beamer}
+\usetheme{CambridgeUS}
+\usepackage[whole]{bxcjkjatype}
+\usepackage[all]{xy}
+\usepackage{listings}
+
+\title{CPLしませんか}
+% \author{大中 公幸}
+\date[2015 7/4]{関西関数型道場 2015 7/4}
+
+\begin{document}
+
+\frame{\maketitle}
+
+% \begin{frame}{誰}
+%     \begin{flushright}
+%         \includegraphics[scale=0.4]{icon.png}
+%     \end{flushright}
+%     \vspace{-80pt}
+%     \Large
+%     \begin{enumerate}
+%         \item 大中 公幸
+%         \item @solo\_rab
+%         \item 神戸大学 B2
+%         \item プログラミングそのものに興味がある
+%         \item 競技プログラミングもする
+%         \item 数学もする
+%     \end{enumerate}
+% \end{frame}
+
+\begin{frame}{言いたいこと}
+    \centering
+    \scalebox{3.0}{CPLやろう}
+\end{frame}
+
+\begin{frame}{述語論理、三角関数、行列}
+    \Large
+    \begin{enumerate}
+        \item 定理証明系 $\to$ 述語論理
+        \item ゲーム製作 $\to$ 三角関数、行列
+        \item 競技プログラミング $\to$ グラフ理論
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{述語論理、三角関数、行列}
+    \begin{enumerate}
+        \item 定理証明系 $\to$ 述語論理
+        \item ゲーム製作 $\to$ 三角関数、行列
+        \item 競技プログラミング $\to$ グラフ理論
+        \item % required
+    \centering
+    \scalebox{4.0}{?? $\to$ 圏論}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}
+    \centering
+    \scalebox{3.0}{Haskell ?}
+\end{frame}
+
+\begin{frame}
+    \centering
+    \scalebox{8.0}{CPL}
+\end{frame}
+
+\begin{frame}
+    \centering
+    \Huge
+    プログラミング言語CPLを \\ 圏論への踏み台にしよう
+\end{frame}
+
+\begin{frame}{CPLとは}
+    \Large
+    \begin{enumerate}
+        \item \textcolor{red}Categorical \textcolor{red}Programming \textcolor{red}Language
+        \item 圏論
+        \item 必ず停止する
+        \item とてもシンプル
+        \item 日本語の情報が多い
+        \item インストールが簡単 \\ \centering{(\texttt{\$ cabal install CPL})}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}
+    \centering
+    \scalebox{3.0}{やるしかない！}
+\end{frame}
+
+\begin{frame}
+    \centering
+    \scalebox{3.0}{コード例}
+\end{frame}
+
+\begin{frame}[fragile]{直積型}
+    \scalebox{1.4}{
+        直積型の定義
+    }
+    \centering
+    \begin{lstlisting}[basicstyle=\ttfamily]
+    right object prod(A,B) with pair is
+        pi1: prod -> A
+        pi2: prod -> B
+    end object;
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{積}
+    \scalebox{2.0}{
+        積
+    }
+    \scalebox{2.0}{
+        $$
+        \xymatrix{
+            & \ar[ld]_-f X \ar@{.>}[d]^-{\left<f,g\right>} \ar[rd]^-g & \\
+            A & \ar[l]^-{\pi_1} A \times B \ar[r]_-{\pi_2} & B
+        }
+        $$
+    }
+\end{frame}
+
+\begin{frame}[fragile]{積}
+    \centering
+    \scalebox{1.5}{
+        $$
+        \xymatrix{
+            & \ar[ld]_-f X \ar@{.>}[d]|-{pair\left(f,g\right)} \ar[rd]^-g & \\
+            A & \ar[l]^-{pi1} prod\left(A,B\right) \ar[r]_-{pi2} & B
+        }
+        $$
+    }
+    \normalsize
+    \begin{lstlisting}[basicstyle=\ttfamily]
+    right object prod(A,B) with pair is
+        pi1: prod -> A
+        pi2: prod -> B
+    end object;
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{関数swap}
+    \centering
+    \scalebox{1.5}{
+        $$
+        \xymatrix{
+            & \ar[ld]_-{pi2} prod\left(B,A\right) \ar@{.>}[d]|-{swap} \ar[rd]^-{pi1} & \\
+            A & \ar[l]^-{pi1} prod\left(A,B\right) \ar[r]_-{pi2} & B
+        }
+        $$
+    }
+    \normalsize
+    \begin{lstlisting}[basicstyle=\ttfamily]
+    let swap = pair(pi2,pi1)
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{自然数}
+    \centering
+    \scalebox{1.8}{
+        $$
+        \xymatrix{
+            1 \ar[r]^{zero} \ar[d] & \mathbb{N} \ar@{.>}[d]^{pr\left(o,s\right)} & \ar[l]_{succ} \mathbb{N} \ar[d] \\
+            1 \ar[r]^{o} & X & \ar[l]_{s} X
+        }
+        $$
+    }
+    \normalsize
+    \begin{lstlisting}[basicstyle=\ttfamily]
+    left object nat with pr is
+        zero: 1 -> nat
+        succ: nat -> nat
+    end object;
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{自然数}
+    \centering
+    \scalebox{2.0}{
+        $$
+        \xymatrix{
+            1 \ar@/_10pt/[rrr]_{2} \ar[r]^{zero} & \mathbb{N} \ar[r]^{succ} & \mathbb{N} \ar[r]^{succ} & \mathbb{N} \\
+        }
+        $$
+    }
+    \normalsize
+    \begin{lstlisting}[basicstyle=\ttfamily]
+    simp full succ.succ.zero;
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{関数add}
+    \centering
+    \scalebox{1.7}{
+        $$
+        \xymatrix@C=36pt@R=36pt{
+            1 \ar[r]^{zero} \ar[d] & \mathbb{N} \ar@{.>}[d]^{\widetilde{add}} & \ar[l]_{succ} \mathbb{N} \ar[d] \\
+            1 \ar[r]^{\lambda \_. \lambda n. n} & \mathbb{N}^\mathbb{N} & \ar[l]_{\lambda f. succ \circ f} \mathbb{N}^\mathbb{N}
+        }
+        $$
+    }
+    \scalebox{1.5}{
+        $$
+        \xymatrix@C=36pt@R=36pt{
+            \mathbb{N} \times \mathbb{N} \ar@{.>}[d]^{add} \\
+            \mathbb{N} \\
+        }
+        $$
+    }
+    \begin{lstlisting}[basicstyle=\ttfamily]
+    let add = ev.prod(pr(cur(pi2),
+                         cur(succ.ev)),I)
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{関数add}
+    \centering
+    \scalebox{2.0}{
+        $$
+        \xymatrix{
+            1 \ar@/_10pt/[rr]_{5} \ar[r]^{\left<2,3\right>} & \mathbb{N} \times \mathbb{N} \ar[r]^{add} & \mathbb{N} \\
+        }
+        $$
+    }
+    \begin{lstlisting}[basicstyle=\ttfamily]
+    simp full add.pair(succ.succ.zero,
+                       succ.succ.succ.zero)
+    \end{lstlisting}
+\end{frame}
+
+\begin{frame}
+    \centering
+    さらに、CPLと数学者向けの圏論の本の間として \newline
+    \includegraphics[scale=0.2]{program-semantics.jpg}
+
+    $\lambda$ 計算の意味論の話の流れの中で自然に圏論が導入されるし \newline
+    CPLに関連する話も載ってるのでおすすめ
+\end{frame}
+
+\begin{frame}
+    \centering
+    \scalebox{2.0}{
+        圏論プログラミング言語CPLを
+    }
+    \scalebox{2.0}{
+        圏論への入口にしよう
+    }
+\end{frame}
+
+\begin{frame}
+    \centering
+    \Large
+    Thank You
+\end{frame}
+
+\end{document}
