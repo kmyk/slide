@@ -1,0 +1,453 @@
+\documentclass[pdflatex,17pt]{beamer}
+\usetheme{Frankfurt}
+%% use triangles for enumeration {{{
+\setbeamertemplate{itemize items}[default]
+\setbeamertemplate{enumerate items}[default]
+% }}}
+%% enable navigation circles {{{
+\usepackage{remreset}
+\makeatletter
+\@removefromreset{subsection}{section}
+\makeatother
+\setcounter{subsection}{1}
+% }}}
+%% remove navigation symbols, which menu icons exists at bottom of slides {{{
+\setbeamertemplate{navigation symbols}{}
+% }}}
+% enable japanese {{{
+\usepackage[whole]{bxcjkjatype}
+% }}}
+%% draw diagrams {{{
+\usepackage[all]{xy}
+% }}}
+% \usepackage{listings}
+
+\title{$\lambda$計算入門}
+\author{Kimiyuki Onaka}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{導入}
+\begin{frame}{自己紹介}
+    \begin{itemize}
+        \item 名前: 大中 公幸
+        \item 所属: 神戸大学~工学部~情報知能工学科~学部2年
+        \item 得意分野: プログラミング, 計算機科学, 論理学
+        \item twitter: @ki6o4
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{目標}
+    \begin{itemize}
+        \item 計算に興味を持ってもらう
+        \item 簡単な計算ができるようになってもらう
+        \begin{itemize}
+            \item $1 + 1~=~??$
+            \item $2 \times 3~=~??$
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{構成}
+    \begin{enumerate}
+        \item $\lambda$記法の紹介
+        \item $\lambda$式の定義
+        \item $\beta$簡約の定義
+        \item 自然数の定義
+        \item 加算と乗算の定義
+        \item 減算の定義
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{連絡}
+    \begin{itemize}
+        \item このslideは
+    \end{itemize}
+     {\rm http://github.com/kmyk/slide/lambda/a.pdf} \\ に置いてあります
+    \begin{itemize}
+        \item 定義の省略とか記号の濫用とかそこそこあります
+    \end{itemize}
+\end{frame}
+
+\section{本論}
+
+\subsection{$\lambda$記法}
+\subsectionpage
+\begin{frame}{$\lambda$記法}
+    \begin{block}{通常の記法}
+        $f(x) = x^2$
+    \end{block}
+    \begin{block}{mapsto}
+        $f : x \mapsto x^2$
+    \end{block}
+    \begin{block}{$\lambda$記法}
+        $f = \lambda x. x^2$
+    \end{block}
+\end{frame}
+
+\begin{frame}{$\lambda$記法~利点}
+    \begin{itemize}
+        \item 名前を付けなくてよい
+        \item 単独で使える、操作がしやすい
+        \item e.g. $\lambda x. x^2$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{$\lambda$記法~例1}
+    \begin{enumerate}
+        \item \begin{itemize}
+            \item $f(x) := x^2$
+            \item $f(4) = 16$
+        \end{itemize}
+        \item \begin{itemize}
+            \item $f := \lambda x. x^2$
+            \item $f(4) = 16$
+        \end{itemize}
+        \item \begin{itemize}
+            \item $(\lambda x. x^2)(4) = 16$
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{$\lambda$記法~例2}
+    \begin{enumerate}
+        \item \begin{itemize}
+            \item $f(x) := x^2$
+            \item $g[h] := h(h(3))$
+            \item $g[f] = (3^2)^2 = 81$
+        \end{itemize}
+        \item \begin{itemize}
+            \item $f := \lambda x. x^2$
+            \item $g := \lambda h. h(h(3))$
+            \item $g(f) = (3^2)^2 = 81$
+        \end{itemize}
+        \item \begin{itemize}
+            \item $(\lambda h. h(h(3)))(\lambda x. x^2) = 81$
+        \end{itemize}
+    \end{enumerate}
+\end{frame}
+
+\subsection{$\lambda$式}
+\subsectionpage
+\begin{frame}{$\lambda$式~定義}
+    $\lambda$式とは以下のように定義される
+    \begin{itemize}
+        \item 変数記号$x_0, x_1, x_2, \dots$は$\lambda$式である
+        \item $M,N$が$\lambda$式のとき $(MN)$は$\lambda$式である
+        \item $x$が変数で$M$が$\lambda$式のとき $(\lambda x. M)$は$\lambda$式である
+        \item 以上によって定義されるもののみが$\lambda$式である
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{$\lambda$式~例}
+    \begin{itemize}
+        \item $(\lambda x_0. ((x_1 x_0) x_0))$
+        \item $(\lambda x_1. (x_1 (x_1 x_0)))$
+        \item $((x_3 x_4)(\lambda x_{103}. x_4))$
+        \item $(\lambda x_1. (\lambda x_2. (\lambda x_3. x_9)))$
+        \item $(\lambda x_1. (\lambda x_1. (\lambda x_1. x_1)))$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{$\lambda$式~省略記法}
+    \begin{itemize}
+        \item 変数は適当に使う
+        \item 分かる範囲で括弧は省略
+        \item $f g h$は$(f g) h$を表す
+        \item $\lambda x y z. w$は$\lambda x. (\lambda y. (\lambda z. w))$を表す
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{$\lambda$式~省略記法~例}
+    \begin{itemize}
+        \item $\lambda x. p x x$
+        \item $\lambda h. h (h 3)$
+        \item $f g (\lambda x. y)$
+        \item $\lambda x y z. w$
+        \item $\lambda x. (\lambda x. (\lambda x. x))$
+    \end{itemize}
+\end{frame}
+
+\newcommand{\betato}{\underset{\beta}{\to}}
+\newcommand{\betasto}{\underset{\beta}{\twoheadrightarrow}}
+\subsection{$\beta$簡約}
+\subsectionpage
+\begin{frame}{$\beta$簡約~定義}
+    $\beta$変換とは、 \\ 以下で定義される二項関係$\betato \subseteq \Lambda \times \Lambda$
+    \begin{itemize}
+        \item $(\lambda x. M)N \betato M[x:=N]$
+        \item $M \betato N$ならば$\lambda x. M \betato \lambda x. N$、$MP \betato NP$、$PM \betato PN$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{$\beta$簡約~定義}
+    $M[x:=N]$は以下のように定義される
+    \begin{itemize}
+        \item $M \equiv x$ならば$N$
+        \item $M \equiv y (y \neq x)$ならば$y$
+        \item $M \equiv PQ$ならば $(P[x:=N])(Q[x:=N])$
+        \item $M \equiv \lambda x. P$ならば$\lambda x. P$
+        \item $M \equiv \lambda y. P (y \neq x)$ならば$\lambda y. P[x:=N]$
+    \end{itemize}
+    つまり、 \\ $M$中の自由な$x$を$N$で置き換えている
+\end{frame}
+
+\begin{frame}{$\beta$簡約~例1}
+    \begin{enumerate}
+        \item $(\lambda x. (\lambda y (\lambda z. x y)))vw$
+        \item $\betato (\lambda y (\lambda z. v y))w$
+        \item $\betato (\lambda z. v w)$
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{$\beta$簡約~例2}
+    \begin{enumerate}
+        \item $(\lambda x. x x)(\lambda y. y)$
+        \item $\betato (\lambda y. y)(\lambda y. y)$
+        \item $\betato (\lambda y. y)$
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{$\beta$簡約~例3}
+    \begin{enumerate}
+        \item $(\lambda x. x x)(\lambda x. x x)$
+        \item $\betato (\lambda x. x x)(\lambda x. x x)$
+        \item $\betato (\lambda x. x x)(\lambda x. x x)$
+        \item $\dots$
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{$\beta$簡約~例4 \\ \small Turingの不動点演算子$\Theta$}
+    \begin{itemize}
+        \item \small $X := \lambda x f. f (x x f)$
+        \item \small $Y := XX$
+    \end{itemize}
+    \begin{enumerate}
+        \item \small $YM$
+        \pause
+        \item \small $\equiv (\lambda x f. f (x x f))XM$
+        \pause
+        \item \small $\betato (\lambda f. f (XXf))M$
+        \pause
+        \item \small $\betato M(XXM)$
+        \pause
+        \item \small $\equiv M(YM)$
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{$\beta$簡約~例4 \\ \small Turingの不動点演算子$\Theta$}
+    \begin{itemize}
+        \item \small $X := \lambda x f. f (x x f)$
+        \item \small $Y := XX$
+    \end{itemize}
+    \begin{enumerate}
+        \item \small $YM$
+        \item \small $\betato M(YM)$
+        \item \small $\betato M(M(YM))$
+        \item \small $\betato M(M(M(YM)))$
+        \item \small $\dots$
+    \end{enumerate}
+\end{frame}
+
+\newcommand{\church}[1]{\lceil #1 \rceil}
+\subsection{自然数}
+\subsectionpage
+\begin{frame}{自然数~定義 \\ \small Church数}
+    自然数$n$に対し、Church数$\church{n}$を以下のように定義する
+    \begin{itemize}
+        \item $\church{n} := \lambda f x. \overbrace{f (f (f (\dots (f}^n x) \dots)))$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{自然数~例}
+    \begin{itemize}
+        \item $\church{0} := \lambda f x. x$
+        \item $\church{1} := \lambda f x. f x$
+        \item $\church{2} := \lambda f x. f (f x)$
+        \item $\church{3} := \lambda f x. f (f (f x))$
+        \item $\dots$
+    \end{itemize}
+\end{frame}
+
+\subsection{演算~加算と乗算}
+\subsectionpage
+\begin{frame}{演算~加算}
+    このような準備の下で、足し算とは
+    \begin{itemize}
+        \item $P\church{m}\church{n} \betasto \church{m+n}$
+    \end{itemize}
+    を満たすような$\lambda$式$P$のこと
+    \pause
+    \vspace{1em}
+    \begin{itemize}
+        \item $+~:= \lambda m n f x. m f (n f x)$
+    \end{itemize}
+    はこれを満たす
+\end{frame}
+
+\begin{frame}{演算~加算~計算~$2+3$}
+    \begin{enumerate}
+        \item \small $+\church{2}\church{3}$
+        \pause
+        \item \small $\equiv (\lambda m n f x. m f (n f x))\church{2}\church{3}$
+        \pause
+        \item \small $\betasto \lambda f x. \church{2} f (\church{3} f x)$
+        \pause
+        \item \small $\equiv \lambda f x. \church{2} f ((\lambda f x. f (f (f x))) f x)$
+        \pause
+        \item \small $\betasto \lambda f x. \church{2} f (f (f (f x)))$
+        \pause
+        \item \small $\equiv \lambda f x. (\lambda f x. f (f x)) f (f (f (f x)))$
+        \pause
+        \item \small $\betato \lambda f x. (\lambda x. f (f x)) (f (f (f x)))$
+        \pause
+        \item \small $\betato \lambda f x. f (f (f (f (f x))))$
+        \pause
+        \item \small $\equiv \church{5}$
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{演算~乗算}
+    掛け算とは
+    \begin{itemize}
+        \item $P\church{m}\church{n} \betasto \church{m\times n}$
+    \end{itemize}
+    を満たすような$\lambda$式$P$のこと
+    \pause
+    \vspace{1em}
+    \begin{itemize}
+        \item $\times~:= \lambda m n f x. m (n f) x$
+    \end{itemize}
+    はこれを満たす
+\end{frame}
+
+\subsection{演算~減算}
+\subsectionpage
+\begin{frame}{演算~後者関数}
+    後者関数とは
+    \begin{itemize}
+        \item $P\church{n} \betasto \church{n+1}$
+    \end{itemize}
+    を満たすような$\lambda$式$P$のこと
+    \pause
+    \vspace{1em}
+    \begin{itemize}
+        \item ${\rm succ}~:= \lambda n f x. f (n f x)$
+    \end{itemize}
+    はこれを満たす
+\end{frame}
+
+\begin{frame}{構造~対}
+    対とは、ある$\lambda$式$x$、$y$があって
+    \begin{itemize}
+        \item $x(PMN) \betasto M$
+        \item $y(PMN) \betasto N$
+    \end{itemize}
+    を満たすような$\lambda$式$P$のこと
+    \pause
+    \begin{itemize}
+        \item $\pi_1 := \lambda x y. x$
+        \item $\pi_2 := \lambda x y. y$
+        \item ${\rm pair}~:= \lambda x y p. p x y$
+    \end{itemize}
+    はこれを満たす
+\end{frame}
+
+\begin{frame}{演算~前者関数}
+    このような準備の下で、前者関数とは
+    \begin{itemize}
+        \item $P\church{0} \betasto \church{0}$
+        \item $P\church{n+1} \betasto \church{n}$
+    \end{itemize}
+    を満たすような$\lambda$式$P$のこと
+    \pause
+    $$ \begin{array}{rl}
+    {\rm pred}~:= \lambda n. \pi_2 (n & (\lambda p. {\rm pair} ({\rm succ} (\pi_1 p)) (\pi_1 p)) \\
+                                      & ({\rm pair} \church{0} \church{0}))
+    \end{array} $$
+    はこれを満たす
+\end{frame}
+
+\begin{frame}{演算~前者関数~例}
+    \scriptsize
+    $$ \begin{array}{rl}
+             & {\rm pred}\church{2} \\
+    \betasto & \pi_2 (\church{2} (\lambda p. {\rm pair} ({\rm succ} (\pi_1 p)) (\pi_1 p)) \\
+             & ~~~~              ({\rm pair} \church{0} \church{0})) \\
+    \betasto & \pi_2 ((\lambda p. {\rm pair} ({\rm succ} (\pi_1 p)) (\pi_1 p)) \\
+             & ~~~~   ((\lambda p. {\rm pair} ({\rm succ} (\pi_1 p)) (\pi_1 p)) \\
+             & ~~~~              ({\rm pair} \church{0} \church{0})))) \\
+    \betasto & \pi_2 ((\lambda p. {\rm pair} ({\rm succ} (\pi_1 p)) (\pi_1 p)) \\
+             & ~~~~   (({\rm pair} ({\rm succ} (\pi_1 ({\rm pair} \church{0} \church{0}))) \\
+             & ~~~~ ~~~~ (\pi_1 ({\rm pair} \church{0} \church{0}))))) \\
+    \betasto & \pi_2 ((\lambda p. {\rm pair} ({\rm succ} (\pi_1 p)) (\pi_1 p)) \\
+             & ~~~~   (({\rm pair} \church{1} \church{0}))) \\
+    \betasto & \pi_2 ({\rm pair} \church{2} \church{1}) \\
+    \betasto & \church{1} \\
+    \end{array} $$
+\end{frame}
+
+\begin{frame}{演算~限定減算~定義}
+    引き算とは
+    \begin{itemize}
+        \item $P\church{m}\church{n} \betasto \church{m\dot{-}n}$
+    \end{itemize}
+    を満たすような$\lambda$式$P$のこと
+    \pause
+    \vspace{1em}
+    \begin{itemize}
+        \item $\dot{-}~:= \lambda m n. n {\rm pred} m$
+    \end{itemize}
+    はこれを満たす
+\end{frame}
+
+\begin{frame}{演算~限定減算~例}
+    \begin{enumerate}
+        \item $\dot{-}\church{5}\church{3}$
+        \pause
+        \item $\betasto \church{3}{\rm pred}\church{5}$
+        \pause
+        \item $\betasto {\rm pred}({\rm pred}({\rm pred}\church{5}))$
+        \pause
+        \item $\dots$
+        \pause
+        \item $\dots$
+        \pause
+        \item $\dots$
+        \pause
+        \item $\betasto \church{2}$
+    \end{enumerate}
+\end{frame}
+
+\subsection{参考文献}
+\begin{frame}{参考文献}
+    \scriptsize
+    \begin{itemize}
+        \item 高橋正子, 計算論, 近代科学社(1991)
+        \begin{itemize}
+        \scriptsize
+            \item 計算可能性の話
+            \item $\lambda$計算の体系と他の計算体系が等価であることとか
+            \item 逆極限法を用いて、無限に計算し続けた結果の極限の話をする
+        \end{itemize}
+        \item 横内寛文, プログラム意味論, 共立出版(1994)
+        \begin{itemize}
+        \scriptsize
+            \item $\lambda$式の意味論の話
+            \item こちらも逆極限法
+            \item cartesian閉圏による形式体系も載ってる
+        \end{itemize}
+        \item 中島玲二, 数理情報学入門, 朝倉書店(1982)
+        \begin{itemize}
+        \scriptsize
+            \item 絶版
+            \item 意味論
+            \item 実際に用いられているプログラミング言語を見据えた感じ
+            \item 逆極限法とかも載ってる
+        \end{itemize}
+    \end{itemize}
+\end{frame}
+
+\end{document}
