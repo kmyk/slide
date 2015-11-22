@@ -58,6 +58,7 @@
         \item 自然数の定義
         \item 加算と乗算の定義
         \item 減算の定義
+        \item combinator理論の紹介
     \end{enumerate}
 \end{frame}
 
@@ -212,6 +213,13 @@
 
 \begin{frame}{$\beta$簡約~例3}
     \begin{enumerate}
+        \item $(\lambda x. x (\lambda x. x))y$
+        \item $\betato y(\lambda x. x)$
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{$\beta$簡約~例4}
+    \begin{enumerate}
         \item $(\lambda x. x x)(\lambda x. x x)$
         \item $\betato (\lambda x. x x)(\lambda x. x x)$
         \item $\betato (\lambda x. x x)(\lambda x. x x)$
@@ -219,7 +227,7 @@
     \end{enumerate}
 \end{frame}
 
-\begin{frame}{$\beta$簡約~例4 \\ \small Turingの不動点演算子$\Theta$}
+\begin{frame}{$\beta$簡約~例5 \\ \small Turingの不動点演算子$\Theta$}
     \begin{itemize}
         \item \small $X := \lambda x f. f (x x f)$
         \item \small $Y := XX$
@@ -237,7 +245,7 @@
     \end{enumerate}
 \end{frame}
 
-\begin{frame}{$\beta$簡約~例4 \\ \small Turingの不動点演算子$\Theta$}
+\begin{frame}{$\beta$簡約~例5 \\ \small Turingの不動点演算子$\Theta$}
     \begin{itemize}
         \item \small $X := \lambda x f. f (x x f)$
         \item \small $Y := XX$
@@ -419,6 +427,32 @@
         \pause
         \item $\betasto \church{2}$
     \end{enumerate}
+\end{frame}
+
+\subsection{combinator理論}
+\begin{frame}{SKI combinators}
+    \begin{itemize}
+        \item $S := \lambda f g x. f x (g x)$
+        \item $K := \lambda x y. x$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{SKI combinators~例}
+    \begin{itemize}
+        \item $I := \lambda x. x$
+        \item $I \equiv SKK$
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{SKI combinators~変換}
+    \begin{itemize}
+        \item $T[x] \to x$
+        \item $T[MN] \to (T[M])(T[N])$
+        \item $T[\lambda x. x] \to SKK$
+        \item $T[\lambda x. y] \to Ky$
+        \item $T[\lambda x. \lambda y. M(x)] \to T[\lambda x. T[\lambda y. M(x)]]$
+        \item $T[\lambda x. M(x)N(x)] \to S(T[\lambda x. M(x))(T[\lambda x. N(x)])$
+    \end{itemize}
 \end{frame}
 
 \subsection{参考文献}
