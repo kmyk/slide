@@ -444,7 +444,19 @@
     \end{itemize}
 \end{frame}
 
+\begin{frame}{SKI combinators~例~加算}
+    例えば、加算$+$を$S,K$のみで表現すると以下のようになる
+
+    $$ \begin{array}{rl}
+        (S (S (K S) & (S (K K) (S I (K (S (K (S (S (K S) K))) \\
+                    & ~~ Y (S (S (K S) K) (K I))))))) (K I))
+    \end{array} $$
+
+    ただし$I \equiv SKK$
+\end{frame}
+
 \begin{frame}{SKI combinators~変換}
+    以下のような変換$T$で、$lambda$式を$S,K$のみの形に変換できる
     \begin{itemize}
         \item $T[x] \to x$
         \item $T[MN] \to (T[M])(T[N])$
